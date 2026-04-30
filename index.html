@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kadimspor Mobil Proje</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-red: #c00000;
+            --dark-bg: #0a0000;
+            --card-bg: rgba(255, 255, 255, 0.08);
+            --text-white: #ffffff;
+            --text-gray: #aaaaaa;
+            --accent-red: #ff3333;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+
+        body { background: #1a1a1a; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+
+        /* Mobil Cihaz Çerçevesi */
+        .mobile-container { 
+            width: 375px; 
+            height: 812px; 
+            background: linear-gradient(180deg, #3a0000 0%, #050000 100%); 
+            border-radius: 40px; 
+            position: relative; 
+            overflow: hidden; 
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8); 
+            border: 8px solid #111; 
+            color: var(--text-white); 
+        }
+
+        /* Ekranlar */
+        .screen { display: none; height: 100%; width: 100%; position: absolute; top: 0; left: 0; animation: fadeIn 0.3s ease-in-out; }
+        .screen.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* İçerik Alanı */
+        .content { padding: 0 20px; height: calc(100% - 150px); overflow-y: auto; padding-bottom: 40px; }
+        .content::-webkit-scrollbar { width: 0px; }
+
+        /* YAN MENÜ (SİDEBAR) STİLLERİ */
+        .sidebar-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 99; display: none; opacity: 0; transition: opacity 0.3s ease; }
+        .sidebar-overlay.active { display: block; opacity: 1; }
+        
+        .sidebar { position: absolute; top: 0; left: -260px; width: 250px; height: 100%; background: #111; z-index: 100; transition: left 0.3s ease; border-right: 1px solid #333; display: flex; flex-direction: column; }
+        .sidebar.active { left: 0; }
+        
+        .sidebar-header { display: flex; justify-content: space-between; align-items: center; padding: 40px 20px 20px; border-bottom: 1px solid #222; }
+        .sidebar-header .mini-logo { width: 40px; }
+        .close-btn { font-size: 22px; color: var(--text-gray); cursor: pointer; }
+        
+        .sidebar-menu { padding: 10px 0; overflow-y: auto; }
+        .menu-item { padding: 15px 20px; font-size: 15px; border-bottom: 1px solid #1a1a1a; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+        .menu-item i:not(.arrow-icon) { width: 25px; color: var(--primary-red); }
+        .menu-item.has-submenu { background: rgba(255,255,255,0.02); }
+        
+        .submenu { display: none; background: #0a0a0a; border-bottom: 1px solid #1a1a1a; }
+        .submenu.active { display: block; animation: slideDown 0.3s ease; }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        .submenu-item { padding: 12px 20px 12px 55px; font-size: 13px; color: var(--text-gray); cursor: pointer; display: flex; align-items: center; }
+
+        /* Header & Logo */
+        .branding { text-align: center; margin-top: 80px; }
+        .main-logo { width: 130px; border-radius: 50%; border: 3px solid var(--primary-red); }
+        .mini-logo { width: 45px; border-radius: 50%; }
+        .app-header { display: flex; justify-content: space-between; align-items: center; padding: 50px 20px 20px; }
+        .app-header i.fa-bars, .app-header i.fa-chevron-left { font-size: 22px; cursor: pointer; }
+
+        /* Formlar & Butonlar */
+        .form-container { padding: 20px 40px; }
+        .input-group { margin-bottom: 20px; position: relative; }
+        .input-group label { display: block; font-size: 13px; color: var(--text-gray); margin-bottom: 5px; }
+        .input-group input, .input-group select, .input-group textarea { width: 100%; padding: 10px 0; background: transparent; border: none; border-bottom: 1px solid #444; color: white; font-size: 16px; outline: none; }
+        .input-group select option { background: #111; color: white; }
+        .input-group textarea { resize: vertical; min-height: 60px; font-family: inherit; }
+        .btn-primary { width: 100%; padding: 15px; background: var(--primary-red); border: none; color: white; border-radius: 10px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        .btn-secondary { width: 100%; padding: 15px; background: transparent; border: 1px solid #444; color: white; border-radius: 10px; margin-top: 10px; cursor: pointer; }
+
+        /* Haberler & Kartlar */
+        .news-card { background: var(--card-bg); border-radius: 15px; overflow: hidden; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.05); }
+        .news-img-placeholder { width: 100%; height: 180px; background: #222; display: flex; align-items: center; justify-content: center; position: relative; }
+        .news-img-placeholder i { font-size: 50px; color: #333; }
+        .news-badge { position: absolute; top: 15px; left: 15px; background: var(--primary-red); color: white; padding: 5px 12px; border-radius: 5px; font-size: 10px; font-weight: bold; }
+        .news-body { padding: 15px; }
+        .news-date { font-size: 11px; color: var(--text-gray); margin-bottom: 8px; display: block; }
+        .news-title { font-size: 18px; font-weight: bold; line-height: 1.3; margin-bottom: 10px; color: var(--text-white); }
+        .news-summary { font-size: 13px; color: var(--text-gray); line-height: 1.5; }
+
+        /* Profil Ekranı */
+        .profile-header { display: flex; align-items: center; padding: 20px 0; margin-bottom: 30px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .profile-avatar-large { width: 100px; height: 100px; border-radius: 50%; background: #333; border: 3px solid var(--primary-red); display: flex; align-items: center; justify-content: center; margin-right: 20px; overflow: hidden; }
+        .profile-avatar-large i { font-size: 50px; color: #555; }
+        .profile-name-box h2 { font-size: 24px; font-weight: 600; letter-spacing: 0.5px; }
+        .profile-info-list { display: flex; flex-direction: column; gap: 15px; }
+        .info-row { background: var(--card-bg); padding: 15px; border-radius: 15px; display: flex; align-items: center; gap: 15px; border-left: 3px solid var(--primary-red); }
+        .info-row i { width: 30px; text-align: center; font-size: 18px; color: var(--accent-red); }
+        .info-data { display: flex; flex-direction: column; }
+        .info-label { font-size: 11px; color: var(--text-gray); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 2px; }
+        .info-value { font-size: 15px; font-weight: 500; }
+
+        /* Takımlar, Oyuncular, Mağaza & Sekmeler */
+        .tabs { display: flex; overflow-x: auto; gap: 20px; border-bottom: 1px solid #333; margin-bottom: 20px; padding-bottom: 10px; justify-content: space-between;}
+        .tabs::-webkit-scrollbar { display: none; }
+        .tabs span { white-space: nowrap; font-size: 13px; color: var(--text-gray); cursor: pointer; }
+        .tabs span.active { color: var(--text-white); border-bottom: 2px solid var(--text-white); font-weight: bold; }
+        .match-card { background: var(--text-white); color: #000; padding: 15px; border-radius: 12px; margin-bottom: 15px; text-align: center; }
+        
+        .player-item { background: var(--card-bg); display: flex; align-items: center; padding: 12px; border-radius: 10px; margin-bottom: 10px; }
+        .player-avatar { width: 45px; height: 45px; background: #333; border-radius: 50%; margin-right: 12px; }
+        .player-info h4 { font-size: 15px; font-weight: 500; }
+        
+        /* Seçim Kartları (Turnuva ve Takımlar İçin) */
+        .select-card { background: var(--card-bg); border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; padding: 20px; margin-bottom: 15px; display: flex; align-items: center; gap: 15px; cursor: pointer; transition: background 0.2s; }
+        .select-card:hover { background: rgba(192,0,0,0.2); border-color: var(--primary-red); }
+        .select-card i { font-size: 30px; color: var(--primary-red); width: 40px; text-align: center; }
+        .select-card h3 { font-size: 18px; color: var(--text-white); }
+
+        /* FİKSTÜR KARTLARI */
+        .fixture-list { display: flex; flex-direction: column; gap: 12px; margin-top: 10px; }
+        .fixture-card { background: var(--card-bg); border-radius: 12px; padding: 15px; border-left: 4px solid #444; border-right: 1px solid rgba(255,255,255,0.05); border-top: 1px solid rgba(255,255,255,0.05); border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .fixture-card.win { border-left-color: #2ecc71; } 
+        .fixture-card.loss { border-left-color: #e74c3c; } 
+        .fixture-card.draw { border-left-color: #f1c40f; } 
+        .fixture-week { font-size: 10px; color: var(--primary-red); text-align: center; margin-bottom: 12px; letter-spacing: 1px; font-weight: bold; }
+        .fixture-row { display: flex; justify-content: space-between; align-items: center; }
+        .fixture-team { flex: 1; font-size: 12px; font-weight: 600; text-align: center; line-height: 1.3; color: #ccc;}
+        .fixture-team.home { text-align: right; padding-right: 10px; }
+        .fixture-team.away { text-align: left; padding-left: 10px; }
+        .fixture-team.highlight { color: var(--text-white); }
+        .fixture-score { font-size: 18px; font-weight: bold; background: #111; padding: 6px 12px; border-radius: 8px; min-width: 65px; text-align: center; color: white; border: 1px solid #333; }
+
+        /* Navigasyon */
+        .bottom-nav { position: absolute; bottom: 0; width: 100%; height: 85px; background: rgba(0,0,0,0.95); display: flex; justify-content: space-around; padding-top: 15px; border-top: 1px solid #222; }
+        .nav-item { text-align: center; color: #555; cursor: pointer; flex: 1; }
+        .nav-item.active { color: var(--primary-red); }
+        .nav-item i { font-size: 20px; display: block; margin-bottom: 4px; }
+        .nav-item span { font-size: 10px; }
+        
+        .empty-state { text-align: center; color: #666; margin-top: 50px; font-size: 14px; }
+    </style>
+</head>
+<body>
+
+    <div class="mobile-container">
+
+        <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <img src="resimler/logo.png" alt="Logo" class="mini-logo">
+                <i class="fas fa-times close-btn" onclick="closeSidebar()"></i>
+            </div>
+            <div class="sidebar-menu">
+                <div class="menu-item" onclick="goTo('teams-select-screen'); closeSidebar()">
+                    <span><i class="fas fa-shield-alt"></i> Takımlarımız</span>
+                </div>
+                <div class="menu-item has-submenu" onclick="toggleSubmenu('turnuva-submenu')">
+                    <span><i class="fas fa-trophy"></i> Turnuvalar</span>
+                    <i class="fas fa-chevron-down arrow-icon" style="font-size: 12px; color: #888;"></i>
+                </div>
+                <div class="submenu" id="turnuva-submenu">
+                    <div class="submenu-item" onclick="openTournament('BASKETBOL')"><i class="fas fa-basketball-ball"></i> Basketbol</div>
+                    <div class="submenu-item" onclick="openTournament('FUTBOL')"><i class="fas fa-futbol"></i> Futbol</div>
+                    <div class="submenu-item" onclick="openTournament('VOLEYBOL')"><i class="fas fa-volleyball-ball"></i> Voleybol</div>
+                </div>
+                <div class="menu-item" onclick="goTo('tourney-select-screen'); closeSidebar()">
+                    <span><i class="fas fa-file-signature"></i> Turnuva Kayıt</span>
+                </div>
+                <div class="menu-item" onclick="goTo('news-screen'); closeSidebar()">
+                    <span><i class="fas fa-newspaper"></i> Haberler</span>
+                </div>
+            </div>
+        </div>
+        
+        <section id="login-screen" class="screen active">
+            <div class="branding">
+                <img src="resimler/logo.png" alt="Logo" class="main-logo">
+                <p style="color:var(--primary-red); font-weight:bold; margin-top:10px;">2015</p>
+            </div>
+            <div class="form-container">
+                <div class="input-group"><label>Üye Numarası</label><input type="text"></div>
+                <div class="input-group"><label>Şifre</label><input type="password"></div>
+                <button type="button" class="btn-primary" onclick="goTo('home-screen')">Giriş Yap</button>
+                <button type="button" class="btn-secondary" onclick="goTo('home-screen')"><i class="fas fa-users"></i> Üyeliksiz Giriş</button>
+                <p style="text-align:center; margin-top:20px; font-size:13px; color:var(--text-gray)">Hesabınız yok mu? <a href="#" onclick="goTo('register-screen')" style="color:var(--primary-red); text-decoration:none; font-weight:bold;">Kayıt Ol</a></p>
+            </div>
+        </section>
+
+        <section id="register-screen" class="screen">
+            <div class="branding"><img src="resimler/logo.png" alt="Logo" class="main-logo"></div>
+            <div class="form-container">
+                <h2 style="text-align:center; margin-bottom:20px;">Kayıt Ol</h2>
+                <div class="input-group"><input type="text" placeholder="Ad Soyad"></div>
+                <div class="input-group"><input type="email" placeholder="E-posta"></div>
+                <div class="input-group"><input type="password" placeholder="Şifre"></div>
+                <button type="button" class="btn-primary" onclick="goTo('login-screen')">Kayıt Ol</button>
+            </div>
+        </section>
+
+        <section id="home-screen" class="screen">
+            <header class="app-header"><i class="fas fa-bars" onclick="openSidebar()"></i><img src="resimler/logo.png" alt="Logo" class="mini-logo"></header>
+            <div class="content">
+                <h2>Hoş geldin 👋</h2>
+                <div style="background:var(--primary-red); padding:15px; border-radius:12px; margin:20px 0; cursor:pointer;" onclick="goTo('news-screen')">
+                    <h3>KADİMSPOR ŞAMPİYON!</h3>
+                    <p style="font-size:11px; opacity:0.8;">Haberin detayları için tıklayın</p>
+                </div>
+                <div class="match-card"><p style="font-size:11px; font-weight:bold; color:var(--primary-red);">SIRADAKİ MAÇ</p><h4>Şehremini - Kadimspor</h4></div>
+            </div>
+            <nav class="bottom-nav">
+                <div class="nav-item active" onclick="goTo('home-screen')"><i class="fas fa-home"></i><span>Ana Sayfa</span></div>
+                <div class="nav-item" onclick="goTo('teams-select-screen')"><i class="fas fa-shield-alt"></i><span>Takımlarımız</span></div>
+                <div class="nav-item" onclick="goTo('store-screen')"><i class="fas fa-shopping-bag"></i><span>Mağaza</span></div>
+                <div class="nav-item" onclick="goTo('profile-screen')"><i class="fas fa-user"></i><span>Profil</span></div>
+            </nav>
+        </section>
+
+        <section id="teams-select-screen" class="screen">
+            <header class="app-header">
+                <i class="fas fa-bars" onclick="openSidebar()"></i>
+                <h2 style="font-size:18px;">TAKIMLARIMIZ</h2>
+                <img src="resimler/logo.png" alt="Logo" class="mini-logo">
+            </header>
+            <div class="content">
+                <div class="select-card" onclick="openTeam('A TAKIMI')">
+                    <i class="fas fa-users"></i>
+                    <h3>A Takımı</h3>
+                </div>
+                <div class="select-card" onclick="openTeam('U18')">
+                    <i class="fas fa-running"></i>
+                    <h3>U18 Takımı</h3>
+                </div>
+                <div class="select-card" onclick="openTeam('U17')">
+                    <i class="fas fa-child"></i>
+                    <h3>U17 Takımı</h3>
+                </div>
+            </div>
+            <nav class="bottom-nav">
+                <div class="nav-item" onclick="goTo('home-screen')"><i class="fas fa-home"></i><span>Ana Sayfa</span></div>
+                <div class="nav-item active" onclick="goTo('teams-select-screen')"><i class="fas fa-shield-alt"></i><span>Takımlarımız</span></div>
+                <div class="nav-item" onclick="goTo('store-screen')"><i class="fas fa-shopping-bag"></i><span>Mağaza</span></div>
+                <div class="nav-item" onclick="goTo('profile-screen')"><i class="fas fa-user"></i><span>Profil</span></div>
+            </nav>
+        </section>
+
+        <section id="team-details-screen" class="screen">
+            <header class="app-header">
+                <i class="fas fa-chevron-left" onclick="goTo('teams-select-screen')"></i>
+                <h2 id="dynamic-team-title" style="font-size:18px;">A TAKIMI</h2>
+                <img src="resimler/logo.png" alt="Logo" class="mini-logo">
+            </header>
+            <div class="content">
+                <div class="tabs" id="team-tabs">
+                    <span class="active" onclick="switchTeamTab('team-oyuncular', this)">Oyuncular</span>
+                    <span onclick="switchTeamTab('team-fikstur', this)">Fikstür</span>
+                    <span onclick="switchTeamTab('team-puan', this)">Puan Durumu</span>
+                </div>
+                
+                <div id="team-oyuncular" class="team-content active">
+                    <div id="a-takim-oyuncu-listesi" class="player-list">
+                        <div class="player-item"><div class="player-avatar"></div><div class="player-info"><h4>Arda Boztaş</h4></div></div>
+                        <div class="player-item"><div class="player-avatar"></div><div class="player-info"><h4>Sayat Kuş</h4></div></div>
+                        <div class="player-item"><div class="player-avatar"></div><div class="player-info"><h4>Sarven Miğdis</h4></div></div>
+                        <div class="player-item"><div class="player-avatar"></div><div class="player-info"><h4>Murat Yusuf Akcan</h4></div></div>
+                        <div class="player-item"><div class="player-avatar"></div><div class="player-info"><h4>Matias Taş</h4></div></div>
+                        <div class="player-item"><div class="player-avatar"></div><div class="player-info"><h4>Heros Ohan Yeşil</h4></div></div>
+                        <div class="player-item"><div class="player-avatar"></div><div class="player-info"><h4>Burak Sümer</h4></div></div>
+                        <div class="player-item"><div class="player-avatar"></div><div class="player-info"><h4>Aren Bağ</h4></div></div>
+                        <div class="player-item"><div class="player-avatar"></div><div class="player-info"><h4>Arek Bolak</h4></div></div>
+                        <div class="player-item"><div class="player-avatar"></div><div class="player-info"><h4>Arda Harunyan</h4></div></div>
+                        <div class="player-item"><div class="player-avatar"></div><div class="player-info"><h4>Abdullah Papas</h4></div></div>
+                        <div class="player-item"><div class="player-avatar"></div><div class="player-info"><h4>Edip Kevin Gürdal</h4></div></div>
+                        <div class="player-item"><div class="player-avatar"></div><div class="player-info"><h4>Abdullah Önder</h4></div></div>
+                        <div class="player-item"><div class="player-avatar"></div><div class="player-info"><h4>Viken Bağ</h4></div></div>
+                        <div class="player-item"><div class="player-avatar"></div><div class="player-info"><h4>Rodi Gez</h4></div></div>
+                        <div class="player-item"><div class="player-avatar"></div><div class="player-info"><h4>Robert Hirant Andan</h4></div></div>
+                        <div class="player-item"><div class="player-avatar"></div><div class="player-info"><h4>Murat Şemun Taş</h4></div></div>
+                        <div class="player-item"><div class="player-avatar"></div><div class="player-info"><h4>Murad Maraşlıoğlu</h4></div></div>
+                        <div class="player-item"><div class="player-avatar"></div><div class="player-info"><h4>Lütfi Can Barış</h4></div></div>
+                        <div class="player-item"><div class="player-avatar"></div><div class="player-info"><h4>Aras Kartal Çitiçiyan</h4></div></div>
+                        <div class="player-item"><div class="player-avatar"></div><div class="player-info"><h4>Yusuf Demirci</h4></div></div>
+                    </div>
+                    <div id="other-oyuncu-listesi" class="empty-state" style="display:none;">Oyuncular yakında eklenecek...</div>
+                </div>
+
+                <div id="team-fikstur" class="team-content" style="display: none;">
+                    <div id="a-takim-fikstur-listesi" class="fixture-list">
+                        <div class="fixture-card draw"><div class="fixture-week">1. HAFTA</div><div class="fixture-row"><div class="fixture-team home highlight">KADİMSPOR</div><div class="fixture-score">0 - 0</div><div class="fixture-team away">ŞEHREMİNİ</div></div></div>
+                        <div class="fixture-card win"><div class="fixture-week">2. HAFTA</div><div class="fixture-row"><div class="fixture-team home">ESENLER Y. SELİM</div><div class="fixture-score">0 - 1</div><div class="fixture-team away highlight">KADİMSPOR</div></div></div>
+                        <div class="fixture-card win"><div class="fixture-week">3. HAFTA</div><div class="fixture-row"><div class="fixture-team home">AVCILAR 1903</div><div class="fixture-score">1 - 6</div><div class="fixture-team away highlight">KADİMSPOR</div></div></div>
+                        <div class="fixture-card draw"><div class="fixture-week">4. HAFTA</div><div class="fixture-row"><div class="fixture-team home highlight">KADİMSPOR</div><div class="fixture-score">1 - 1</div><div class="fixture-team away">BAĞCILAR EVREN</div></div></div>
+                        <div class="fixture-card loss"><div class="fixture-week">5. HAFTA</div><div class="fixture-row"><div class="fixture-team home">ÇAYIRBAŞI</div><div class="fixture-score">3 - 2</div><div class="fixture-team away highlight">KADİMSPOR</div></div></div>
+                        <div class="fixture-card win"><div class="fixture-week">6. HAFTA</div><div class="fixture-row"><div class="fixture-team home highlight">KADİMSPOR</div><div class="fixture-score">1 - 0</div><div class="fixture-team away">YENİ LEVENT</div></div></div>
+                        <div class="fixture-card draw"><div class="fixture-week">7. HAFTA</div><div class="fixture-row"><div class="fixture-team home">SEFAKÖY</div><div class="fixture-score">0 - 0</div><div class="fixture-team away highlight">KADİMSPOR</div></div></div>
+                        <div class="fixture-card"><div class="fixture-week">8. HAFTA</div><div class="fixture-row"><div class="fixture-team home">ŞEHREMİNİ</div><div class="fixture-score">-</div><div class="fixture-team away highlight">KADİMSPOR</div></div></div>
+                        <div class="fixture-card"><div class="fixture-week">9. HAFTA</div><div class="fixture-row"><div class="fixture-team home highlight">KADİMSPOR</div><div class="fixture-score">-</div><div class="fixture-team away">ESENLER Y. SELİM</div></div></div>
+                        <div class="fixture-card"><div class="fixture-week">10. HAFTA</div><div class="fixture-row"><div class="fixture-team home highlight">KADİMSPOR</div><div class="fixture-score">-</div><div class="fixture-team away">AVCILAR 1903</div></div></div>
+                        <div class="fixture-card"><div class="fixture-week">11. HAFTA</div><div class="fixture-row"><div class="fixture-team home">BAĞCILAR EVREN</div><div class="fixture-score">-</div><div class="fixture-team away highlight">KADİMSPOR</div></div></div>
+                        <div class="fixture-card"><div class="fixture-week">12. HAFTA</div><div class="fixture-row"><div class="fixture-team home highlight">KADİMSPOR</div><div class="fixture-score">-</div><div class="fixture-team away">ÇAYIRBAŞI</div></div></div>
+                        <div class="fixture-card"><div class="fixture-week">13. HAFTA</div><div class="fixture-row"><div class="fixture-team home">YENİ LEVENT</div><div class="fixture-score">-</div><div class="fixture-team away highlight">KADİMSPOR</div></div></div>
+                        <div class="fixture-card" style="margin-bottom: 20px;"><div class="fixture-week">14. HAFTA</div><div class="fixture-row"><div class="fixture-team home highlight">KADİMSPOR</div><div class="fixture-score">-</div><div class="fixture-team away">SEFAKÖY</div></div></div>
+                    </div>
+                    <div id="other-fikstur-listesi" class="empty-state" style="display:none;">Fikstür yakında eklenecek...</div>
+                </div>
+
+                <div id="team-puan" class="team-content" style="display: none;">
+                    <div class="empty-state">Puan durumu yakında eklenecek...</div>
+                </div>
+
+            </div>
+            <nav class="bottom-nav">
+                <div class="nav-item" onclick="goTo('home-screen')"><i class="fas fa-home"></i><span>Ana Sayfa</span></div>
+                <div class="nav-item active" onclick="goTo('teams-select-screen')"><i class="fas fa-shield-alt"></i><span>Takımlarımız</span></div>
+                <div class="nav-item" onclick="goTo('store-screen')"><i class="fas fa-shopping-bag"></i><span>Mağaza</span></div>
+                <div class="nav-item" onclick="goTo('profile-screen')"><i class="fas fa-user"></i><span>Profil</span></div>
+            </nav>
+        </section>
+
+        <section id="news-screen" class="screen">
+            <header class="app-header"><i class="fas fa-chevron-left" onclick="goTo('home-screen')"></i><h2 style="font-size:18px;">HABERLER</h2><img src="resimler/logo.png" alt="Logo" class="mini-logo"></header>
+            <div class="content">
+                <div class="news-card">
+                    <div class="news-img-placeholder"><span class="news-badge">SON DAKİKA</span><i class="fas fa-trophy"></i></div>
+                    <div class="news-body"><span class="news-date">28 Nisan 2026</span><h3 class="news-title">KADİMSPOR ŞAMPİYON!</h3><p class="news-summary">Kulübümüz, muhteşem bir sezonun ardından final maçında rakibini mağlup ederek kupayı müzesine götürdü.</p></div>
+                </div>
+                <div class="news-card">
+                    <div class="news-img-placeholder"><i class="fas fa-newspaper"></i></div>
+                    <div class="news-body"><span class="news-date">25 Nisan 2026</span><h3 class="news-title">Yeni Sezon Hazırlıkları Başladı</h3><p class="news-summary">A Takımımız, önümüzdeki sezonun planlaması ve ilk idmanlar için sahaya indi. Hedef yine zirve!</p></div>
+                </div>
+            </div>
+            <nav class="bottom-nav">
+                <div class="nav-item active" onclick="goTo('home-screen')"><i class="fas fa-home"></i><span>Ana Sayfa</span></div>
+                <div class="nav-item" onclick="goTo('teams-select-screen')"><i class="fas fa-shield-alt"></i><span>Takımlarımız</span></div>
+                <div class="nav-item" onclick="goTo('store-screen')"><i class="fas fa-shopping-bag"></i><span>Mağaza</span></div>
+                <div class="nav-item" onclick="goTo('profile-screen')"><i class="fas fa-user"></i><span>Profil</span></div>
+            </nav>
+        </section>
+
+        <section id="tournament-screen" class="screen">
+            <header class="app-header"><i class="fas fa-chevron-left" onclick="goTo('home-screen')"></i><h2 id="dynamic-tournament-title" style="font-size:18px;">TURNUVA</h2><img src="resimler/logo.png" alt="Logo" class="mini-logo"></header>
+            <div class="content">
+                <div class="tabs" id="tournament-tabs">
+                    <span class="active" onclick="switchTourneyTab('fikstur', this)">Fikstür</span>
+                    <span onclick="switchTourneyTab('puan-durumu', this)">Puan Durumu</span>
+                    <span onclick="switchTourneyTab('takimlar', this)">Takımlar</span>
+                </div>
+                <div id="fikstur" class="tourney-content active"><div class="empty-state">Fikstür yakında eklenecek...</div></div>
+                <div id="puan-durumu" class="tourney-content" style="display:none;"><div class="empty-state">Puan durumu yakında eklenecek...</div></div>
+                <div id="takimlar" class="tourney-content" style="display:none;"><div class="empty-state">Takımlar yakında eklenecek...</div></div>
+            </div>
+            <nav class="bottom-nav"><div class="nav-item" onclick="goTo('home-screen')"><i class="fas fa-home"></i><span>Ana Sayfa</span></div><div class="nav-item" onclick="goTo('teams-select-screen')"><i class="fas fa-shield-alt"></i><span>Takımlarımız</span></div><div class="nav-item" onclick="goTo('store-screen')"><i class="fas fa-shopping-bag"></i><span>Mağaza</span></div><div class="nav-item" onclick="goTo('profile-screen')"><i class="fas fa-user"></i><span>Profil</span></div></nav>
+        </section>
+
+        <section id="tourney-select-screen" class="screen">
+            <header class="app-header">
+                <i class="fas fa-chevron-left" onclick="goTo('home-screen')"></i>
+                <h2 style="font-size:18px;">KAYIT OL</h2>
+                <img src="resimler/logo.png" alt="Logo" class="mini-logo">
+            </header>
+            <div class="content">
+                <h3 style="text-align: center; margin-bottom: 25px; font-weight: 500; font-size: 16px;">Hangi turnuvaya katılmak istiyorsunuz?</h3>
+                <div class="select-card" onclick="openRegistrationForm('BASKETBOL')"><i class="fas fa-basketball-ball"></i><h3>Basketbol</h3></div>
+                <div class="select-card" onclick="openRegistrationForm('FUTBOL')"><i class="fas fa-futbol"></i><h3>Futbol</h3></div>
+                <div class="select-card" onclick="openRegistrationForm('VOLEYBOL')"><i class="fas fa-volleyball-ball"></i><h3>Voleybol</h3></div>
+            </div>
+            <nav class="bottom-nav">
+                <div class="nav-item active" onclick="goTo('home-screen')"><i class="fas fa-home"></i><span>Ana Sayfa</span></div>
+                <div class="nav-item" onclick="goTo('teams-select-screen')"><i class="fas fa-shield-alt"></i><span>Takımlarımız</span></div>
+                <div class="nav-item" onclick="goTo('store-screen')"><i class="fas fa-shopping-bag"></i><span>Mağaza</span></div>
+                <div class="nav-item" onclick="goTo('profile-screen')"><i class="fas fa-user"></i><span>Profil</span></div>
+            </nav>
+        </section>
+
+        <section id="tourney-form-screen" class="screen">
+            <header class="app-header">
+                <i class="fas fa-chevron-left" onclick="goTo('tourney-select-screen')"></i>
+                <h2 style="font-size:18px;">BAŞVURU FORMU</h2>
+                <img src="resimler/logo.png" alt="Logo" class="mini-logo">
+            </header>
+            <div class="content">
+                <h3 id="reg-form-subtitle" style="margin-bottom: 20px; color: var(--primary-red); text-align: center; font-size: 16px;"></h3>
+                
+                <div id="form-BASKETBOL" class="tourney-form-group" style="display: none;">
+                    <div class="input-group">
+                        <label>Ad-Soyad (Zorunlu*)</label>
+                        <input type="text" placeholder="Adınızı ve soyadınızı giriniz">
+                    </div>
+                    <div class="input-group">
+                        <label>Yaş (Zorunlu*)</label>
+                        <input type="number" placeholder="Yaşınızı giriniz">
+                    </div>
+                    <div class="input-group">
+                        <label>Katılım Türü</label>
+                        <select id="basketbol-katilim" onchange="toggleBasketTeamFields()">
+                            <option value="bireysel">Bireysel Katılım</option>
+                            <option value="takimli">Takımlı Katılım</option>
+                        </select>
+                    </div>
+                    <div id="basketbol-takim-alanlari" style="display: none;">
+                        <div class="input-group">
+                            <label>Takım Adı</label>
+                            <input type="text" placeholder="Takımınızın adını giriniz">
+                        </div>
+                        <div class="input-group">
+                            <label>Takım Listesi</label>
+                            <textarea placeholder="Oyuncuların adlarını aralarına virgül koyarak yazınız..."></textarea>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-primary" onclick="alert('Başvurunuz başarıyla alınmıştır!')">Başvuruyu Tamamla</button>
+                </div>
+
+                <div id="form-FUTBOL" class="tourney-form-group" style="display: none;">
+                    <div class="input-group">
+                        <label>Ad-Soyad (Zorunlu*)</label>
+                        <input type="text" placeholder="Adınızı ve soyadınızı giriniz">
+                    </div>
+                    <div class="input-group">
+                        <label>Yaş (Zorunlu*)</label>
+                        <input type="number" placeholder="Yaşınızı giriniz">
+                    </div>
+                    <div class="input-group">
+                        <label>Takım Adı</label>
+                        <input type="text" placeholder="Takımınızın adını giriniz">
+                    </div>
+                    <div class="input-group">
+                        <label>Takım Listesi</label>
+                        <textarea placeholder="Oyuncuların adlarını aralarına virgül koyarak yazınız..."></textarea>
+                    </div>
+                    <button type="button" class="btn-primary" onclick="alert('Başvurunuz başarıyla alınmıştır!')">Başvuruyu Tamamla</button>
+                </div>
+
+                <div id="form-VOLEYBOL" class="tourney-form-group" style="display: none;">
+                    <div class="input-group">
+                        <label>Ad-Soyad (Zorunlu*)</label>
+                        <input type="text" placeholder="Adınızı ve soyadınızı giriniz">
+                    </div>
+                    <div class="input-group">
+                        <label>Yaş (Zorunlu*)</label>
+                        <input type="number" placeholder="Yaşınızı giriniz">
+                    </div>
+                    <button type="button" class="btn-primary" onclick="alert('Başvurunuz başarıyla alınmıştır!')">Başvuruyu Tamamla</button>
+                </div>
+
+            </div>
+            <nav class="bottom-nav">
+                <div class="nav-item active" onclick="goTo('home-screen')"><i class="fas fa-home"></i><span>Ana Sayfa</span></div>
+                <div class="nav-item" onclick="goTo('teams-select-screen')"><i class="fas fa-shield-alt"></i><span>Takımlarımız</span></div>
+                <div class="nav-item" onclick="goTo('store-screen')"><i class="fas fa-shopping-bag"></i><span>Mağaza</span></div>
+                <div class="nav-item" onclick="goTo('profile-screen')"><i class="fas fa-user"></i><span>Profil</span></div>
+            </nav>
+        </section>
+
+        <section id="store-screen" class="screen">
+            <header class="app-header"><i class="fas fa-bars" onclick="openSidebar()"></i><h2 style="font-size:18px;">KADIMSTORE</h2><img src="resimler/logo.png" alt="Logo" class="mini-logo"></header>
+            <div class="content">
+                <div style="background: rgba(255,255,255,0.1); padding: 12px 15px; border-radius: 12px; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+                    <i class="fas fa-search" style="color: var(--text-gray);"></i>
+                    <input type="text" placeholder="Ürün Ara..." style="background: transparent; border: none; color: white; width: 100%; outline: none; font-size: 14px;">
+                </div>
+                <div class="tabs" style="justify-content: space-between;">
+                    <span class="active">TÜMÜ</span><span>FORMALAR</span><span>GİYİM</span><span>AKSESUAR</span>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px;">
+                    <div style="background: var(--card-bg); padding: 12px; border-radius: 15px; text-align: center; border: 1px solid rgba(255,255,255,0.05); display: flex; flex-direction: column;">
+                        <div style="height: 120px; background: #222; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 12px; position: relative;">
+                            <i class="fas fa-tshirt" style="font-size: 40px; color: #444;"></i>
+                            <span style="position: absolute; top: 8px; left: 8px; background: var(--primary-red); color: white; font-size: 9px; padding: 4px 6px; border-radius: 4px; font-weight: bold; letter-spacing: 1px;">YENİ</span>
+                        </div>
+                        <h4 style="font-size: 13px; margin-bottom: 5px; color: var(--text-white); font-weight: 600; flex-grow: 1;">İç Saha Forması</h4>
+                        <p style="font-weight: bold; color: var(--primary-red); font-size: 15px; margin-bottom: 10px;">₺1.250</p>
+                        <button type="button" style="background: transparent; color: white; border: 1px solid var(--primary-red); padding: 8px; width: 100%; border-radius: 8px; font-size: 12px; cursor: pointer;">Sepete Ekle</button>
+                    </div>
+                    <div style="background: var(--card-bg); padding: 12px; border-radius: 15px; text-align: center; border: 1px solid rgba(255,255,255,0.05); display: flex; flex-direction: column;">
+                        <div style="height: 120px; background: #222; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 12px;">
+                            <i class="fas fa-tshirt" style="font-size: 40px; color: #444;"></i>
+                        </div>
+                        <h4 style="font-size: 13px; margin-bottom: 5px; color: var(--text-white); font-weight: 600; flex-grow: 1;">Deplasman Forması</h4>
+                        <p style="font-weight: bold; color: var(--primary-red); font-size: 15px; margin-bottom: 10px;">₺1.250</p>
+                        <button type="button" style="background: transparent; color: white; border: 1px solid var(--primary-red); padding: 8px; width: 100%; border-radius: 8px; font-size: 12px; cursor: pointer;">Sepete Ekle</button>
+                    </div>
+                    <div style="background: var(--card-bg); padding: 12px; border-radius: 15px; text-align: center; border: 1px solid rgba(255,255,255,0.05); display: flex; flex-direction: column;">
+                        <div style="height: 120px; background: #222; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 12px;">
+                            <i class="fas fa-image" style="font-size: 40px; color: #444;"></i>
+                        </div>
+                        <h4 style="font-size: 13px; margin-bottom: 5px; color: var(--text-white); font-weight: 600; flex-grow: 1;">Kadimspor Atkı</h4>
+                        <p style="font-weight: bold; color: var(--primary-red); font-size: 15px; margin-bottom: 10px;">₺350</p>
+                        <button type="button" style="background: transparent; color: white; border: 1px solid var(--primary-red); padding: 8px; width: 100%; border-radius: 8px; font-size: 12px; cursor: pointer;">Sepete Ekle</button>
+                    </div>
+                </div>
+            </div>
+            <nav class="bottom-nav">
+                <div class="nav-item" onclick="goTo('home-screen')"><i class="fas fa-home"></i><span>Ana Sayfa</span></div>
+                <div class="nav-item" onclick="goTo('teams-select-screen')"><i class="fas fa-shield-alt"></i><span>Takımlarımız</span></div>
+                <div class="nav-item active" onclick="goTo('store-screen')"><i class="fas fa-shopping-bag"></i><span>Mağaza</span></div>
+                <div class="nav-item" onclick="goTo('profile-screen')"><i class="fas fa-user"></i><span>Profil</span></div>
+            </nav>
+        </section>
+
+        <section id="profile-screen" class="screen">
+            <header class="app-header"><i class="fas fa-chevron-left" onclick="goTo('home-screen')"></i><img src="resimler/logo.png" alt="Logo" class="mini-logo"></header>
+            <div class="content">
+                <div class="profile-header"><div class="profile-avatar-large"><i class="fas fa-camera"></i></div><div class="profile-name-box"><p style="font-size:12px; color:var(--text-gray);">Hoş Geldin</p><h2>Ad Soyad</h2></div></div>
+                <div class="profile-info-list">
+                    <div class="info-row"><i class="fas fa-id-card"></i><div class="info-data"><span class="info-label">Üye Numarası</span><span class="info-value">#12345678</span></div></div>
+                    <div class="info-row"><i class="fas fa-birthday-cake"></i><div class="info-data"><span class="info-label">Doğum Tarihi</span><span class="info-value">01 / 01 / 1990</span></div></div>
+                    <div class="info-row"><i class="fas fa-envelope"></i><div class="info-data"><span class="info-label">E-posta</span><span class="info-value">isim@kadimspor.com</span></div></div>
+                    <div class="info-row"><i class="fas fa-phone"></i><div class="info-data"><span class="info-label">Telefon Numarası</span><span class="info-value">+90 5XX XXX XX XX</span></div></div>
+                </div>
+            </div>
+            <nav class="bottom-nav">
+                <div class="nav-item" onclick="goTo('home-screen')"><i class="fas fa-home"></i><span>Ana Sayfa</span></div>
+                <div class="nav-item" onclick="goTo('teams-select-screen')"><i class="fas fa-shield-alt"></i><span>Takımlarımız</span></div>
+                <div class="nav-item" onclick="goTo('store-screen')"><i class="fas fa-shopping-bag"></i><span>Mağaza</span></div>
+                <div class="nav-item active" onclick="goTo('profile-screen')"><i class="fas fa-user"></i><span>Profil</span></div>
+            </nav>
+        </section>
+
+    </div>
+
+    <script>
+        function goTo(id) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            const target = document.getElementById(id);
+            if(target) {
+                target.classList.add('active');
+                const content = target.querySelector('.content');
+                if(content) content.scrollTop = 0;
+            }
+        }
+
+        function openSidebar() {
+            document.getElementById('sidebar').classList.add('active');
+            document.getElementById('sidebar-overlay').classList.add('active');
+        }
+
+        function closeSidebar() {
+            document.getElementById('sidebar').classList.remove('active');
+            document.getElementById('sidebar-overlay').classList.remove('active');
+        }
+
+        function toggleSubmenu(id) {
+            const submenu = document.getElementById(id);
+            submenu.classList.toggle('active');
+            const arrow = submenu.previousElementSibling.querySelector('.arrow-icon');
+            if(submenu.classList.contains('active')) { arrow.classList.replace('fa-chevron-down', 'fa-chevron-up'); } 
+            else { arrow.classList.replace('fa-chevron-up', 'fa-chevron-down'); }
+        }
+
+        function openTournament(sportName) {
+            closeSidebar();
+            document.getElementById('dynamic-tournament-title').innerText = sportName;
+            goTo('tournament-screen');
+        }
+
+        function switchTourneyTab(tabId, element) {
+            document.querySelectorAll('.tourney-content').forEach(c => c.style.display = 'none');
+            document.getElementById(tabId).style.display = 'block';
+            document.querySelectorAll('#tournament-tabs span').forEach(s => s.classList.remove('active'));
+            element.classList.add('active');
+        }
+
+        function openRegistrationForm(sportName) {
+            document.getElementById('reg-form-subtitle').innerText = sportName + " TURNUVASI BAŞVURU FORMU";
+            document.querySelectorAll('.tourney-form-group').forEach(f => f.style.display = 'none');
+            const selectedForm = document.getElementById('form-' + sportName);
+            if(selectedForm) { selectedForm.style.display = 'block'; }
+            goTo('tourney-form-screen');
+        }
+
+        function toggleBasketTeamFields() {
+            const selection = document.getElementById('basketbol-katilim').value;
+            const teamFields = document.getElementById('basketbol-takim-alanlari');
+            if(selection === 'takimli') { teamFields.style.display = 'block'; } 
+            else { teamFields.style.display = 'none'; }
+        }
+
+        // YENİ: Seçilen takımı açma fonksiyonu
+        function openTeam(teamName) {
+            document.getElementById('dynamic-team-title').innerText = teamName;
+            
+            // Eğer A Takımı seçildiyse A takımı verilerini, yoksa "Yakında" uyarısını göster
+            if (teamName === 'A TAKIMI') {
+                document.getElementById('a-takim-oyuncu-listesi').style.display = 'block';
+                document.getElementById('a-takim-fikstur-listesi').style.display = 'flex';
+                document.getElementById('other-oyuncu-listesi').style.display = 'none';
+                document.getElementById('other-fikstur-listesi').style.display = 'none';
+            } else {
+                document.getElementById('a-takim-oyuncu-listesi').style.display = 'none';
+                document.getElementById('a-takim-fikstur-listesi').style.display = 'none';
+                document.getElementById('other-oyuncu-listesi').style.display = 'block';
+                document.getElementById('other-fikstur-listesi').style.display = 'block';
+            }
+
+            // Her giriş yapıldığında varsayılan olarak ilk sekme (Oyuncular) açık gelsin
+            switchTeamTab('team-oyuncular', document.querySelector('#team-tabs span:first-child'));
+            goTo('team-details-screen');
+        }
+
+        // YENİ: Takım içi sekmeleri değiştirme fonksiyonu
+        function switchTeamTab(tabId, element) {
+            document.querySelectorAll('.team-content').forEach(c => c.style.display = 'none');
+            document.getElementById(tabId).style.display = 'block';
+            document.querySelectorAll('#team-tabs span').forEach(s => s.classList.remove('active'));
+            element.classList.add('active');
+        }
+    </script>
+</body>
+</html>
