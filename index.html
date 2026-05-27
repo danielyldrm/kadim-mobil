@@ -13,23 +13,38 @@
             --text-white: #ffffff;
             --text-gray: #aaaaaa;
             --accent-red: #ff3333;
+
+            /* FOTOĞRAFTAKİ ARKA PLAN TEMA RENKLERİ */
+            --app-bg-1: #2a0000;   /* çok koyu bordo */
+            --app-bg-2: #4b0000;   /* bordo */
+            --app-bg-3: #6a0000;   /* kızıl bordo */
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
 
-        body { background: #1a1a1a; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        /* Telefon dışı arka plan */
+        body {
+            background:
+                radial-gradient(900px 650px at 50% 30%, rgba(106,0,0,0.55) 0%, rgba(0,0,0,0.88) 60%, #060000 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
 
         /* Mobil Cihaz Çerçevesi */
-        .mobile-container { 
-            width: 375px; 
-            height: 812px; 
-            background: linear-gradient(180deg, #3a0000 0%, #050000 100%); 
-            border-radius: 40px; 
-            position: relative; 
-            overflow: hidden; 
-            box-shadow: 0 20px 50px rgba(0,0,0,0.8); 
-            border: 8px solid #111; 
-            color: var(--text-white); 
+        .mobile-container {
+            width: 375px;
+            height: 812px;
+            background:
+                radial-gradient(900px 620px at 60% 25%, rgba(130,0,0,0.55) 0%, rgba(60,0,0,0.40) 35%, rgba(5,0,0,0.92) 78%),
+                linear-gradient(135deg, var(--app-bg-3) 0%, var(--app-bg-2) 38%, var(--app-bg-1) 100%);
+            border-radius: 40px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+            border: 8px solid #111;
+            color: var(--text-white);
         }
 
         /* Ekranlar */
@@ -42,15 +57,8 @@
         .content::-webkit-scrollbar { width: 0px; }
 
         /* ===== GİRİŞ / SPLASH (VİDEO) ===== */
-        #splash-screen{
-            background: #000;
-        }
-        .splash-video{
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-        }
+        #splash-screen{ background: #000; }
+        .splash-video{ width: 100%; height: 100%; object-fit: cover; display: block; }
         .splash-fallback{
             position: absolute;
             inset: 0;
@@ -59,7 +67,9 @@
             justify-content: center;
             flex-direction: column;
             gap: 14px;
-            background: linear-gradient(180deg, #3a0000 0%, #050000 100%);
+            background:
+                radial-gradient(900px 620px at 60% 25%, rgba(130,0,0,0.55) 0%, rgba(60,0,0,0.40) 35%, rgba(5,0,0,0.92) 78%),
+                linear-gradient(135deg, var(--app-bg-3) 0%, var(--app-bg-2) 38%, var(--app-bg-1) 100%);
         }
         .splash-fallback img{
             width: 120px;
@@ -76,19 +86,19 @@
         /* YAN MENÜ (SİDEBAR) STİLLERİ */
         .sidebar-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 99; display: none; opacity: 0; transition: opacity 0.3s ease; }
         .sidebar-overlay.active { display: block; opacity: 1; }
-        
+
         .sidebar { position: absolute; top: 0; left: -260px; width: 250px; height: 100%; background: #111; z-index: 100; transition: left 0.3s ease; border-right: 1px solid #333; display: flex; flex-direction: column; }
         .sidebar.active { left: 0; }
-        
+
         .sidebar-header { display: flex; justify-content: space-between; align-items: center; padding: 40px 20px 20px; border-bottom: 1px solid #222; }
         .sidebar-header .mini-logo { width: 40px; }
         .close-btn { font-size: 22px; color: var(--text-gray); cursor: pointer; }
-        
+
         .sidebar-menu { padding: 10px 0; overflow-y: auto; }
         .menu-item { padding: 15px 20px; font-size: 15px; border-bottom: 1px solid #1a1a1a; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
         .menu-item i:not(.arrow-icon) { width: 25px; color: var(--primary-red); }
         .menu-item.has-submenu { background: rgba(255,255,255,0.02); }
-        
+
         .submenu { display: none; background: #0a0a0a; border-bottom: 1px solid #1a1a1a; }
         .submenu.active { display: block; animation: slideDown 0.3s ease; }
         @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
@@ -106,6 +116,7 @@
         .input-group { margin-bottom: 20px; position: relative; }
         .input-group label { display: block; font-size: 13px; color: var(--text-gray); margin-bottom: 5px; }
         .input-group input, .input-group select, .input-group textarea { width: 100%; padding: 10px 0; background: transparent; border: none; border-bottom: 1px solid #444; color: white; font-size: 16px; outline: none; }
+        .input-group input::placeholder, .input-group textarea::placeholder { color: #666; }
         .input-group select option { background: #111; color: white; }
         .input-group textarea { resize: vertical; min-height: 60px; font-family: inherit; }
         .btn-primary { width: 100%; padding: 15px; background: var(--primary-red); border: none; color: white; border-radius: 10px; font-weight: bold; cursor: pointer; margin-top: 10px; }
@@ -121,14 +132,184 @@
         .news-title { font-size: 18px; font-weight: bold; line-height: 1.3; margin-bottom: 10px; color: var(--text-white); }
         .news-summary { font-size: 13px; color: var(--text-gray); line-height: 1.5; }
 
+        /* ===== ANA SAYFA HABER SLIDER ===== */
+        .home-news-slider{
+            background: rgba(0,0,0,0.25);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 16px;
+            overflow: hidden;
+            margin: 20px 0 10px;
+            box-shadow: 0 12px 26px rgba(0,0,0,0.35);
+        }
+        .home-news-track{
+            display: flex;
+            width: 100%;
+            transform: translateX(0);
+            transition: transform 0.35s ease;
+        }
+        .home-news-slide{
+            min-width: 100%;
+            padding: 16px;
+            cursor: pointer;
+            user-select: none;
+        }
+        .home-news-head{
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+        .home-news-logo{
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.12);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            flex: 0 0 auto;
+        }
+        .home-news-logo img{
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .home-news-meta{ min-width: 0; }
+        .home-news-chip{
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 0.8px;
+            padding: 5px 10px;
+            border-radius: 999px;
+            background: rgba(192,0,0,0.18);
+            border: 1px solid rgba(192,0,0,0.25);
+            color: #fff;
+            margin-bottom: 6px;
+        }
+        .home-news-chip i{ font-size: 11px; }
+        .home-news-title{
+            font-size: 16px;
+            font-weight: 900;
+            line-height: 1.25;
+            color: #fff;
+            margin: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .home-news-desc{
+            margin-top: 10px;
+            font-size: 12px;
+            line-height: 1.55;
+            color: rgba(255,255,255,0.78);
+        }
+        .home-news-footer{
+            margin-top: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: rgba(255,255,255,0.70);
+            font-size: 11px;
+        }
+        .home-news-footer .more{
+            color: #fff;
+            font-weight: 800;
+            display: inline-flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .home-news-dots{
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            padding: 10px 0 14px;
+            background: rgba(0,0,0,0.12);
+            border-top: 1px solid rgba(255,255,255,0.06);
+        }
+        .home-news-dot{
+            width: 7px;
+            height: 7px;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.25);
+            border: 1px solid rgba(255,255,255,0.10);
+            transition: all 0.25s ease;
+            cursor: pointer;
+        }
+        .home-news-dot.active{
+            width: 18px;
+            background: rgba(192,0,0,0.90);
+            border-color: rgba(255,255,255,0.18);
+        }
+
+        /* ===== ANA SAYFA TAKIM SEKME BAR ===== */
+        .home-team-tabs{
+            display: flex;
+            gap: 18px;
+            align-items: center;
+            padding: 8px 2px 14px;
+            overflow-x: auto;
+            border-bottom: 1px solid rgba(255,255,255,0.14);
+            margin-top: 6px;
+            margin-bottom: 14px;
+        }
+        .home-team-tabs::-webkit-scrollbar{ display:none; }
+
+        .home-team-tab{
+            position: relative;
+            font-size: 13px;
+            font-weight: 800;
+            color: rgba(255,255,255,0.70);
+            white-space: nowrap;
+            cursor: pointer;
+            padding: 8px 2px;
+        }
+        .home-team-tab.active{
+            color: #fff;
+        }
+        .home-team-tab.active::after{
+            content:"";
+            position: absolute;
+            left: 0;
+            bottom: -10px;
+            width: 56px;
+            height: 4px;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.92);
+        }
+
+        /* “Yakında açıklanacak” kutusu */
+        .upcoming-placeholder{
+            background: rgba(0,0,0,0.28);
+            border: 1px solid rgba(255,255,255,0.10);
+            border-radius: 16px;
+            padding: 22px 16px;
+            text-align: center;
+            color: rgba(255,255,255,0.78);
+            font-size: 13px;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+        .upcoming-placeholder i{
+            display:block;
+            font-size: 28px;
+            margin-bottom: 10px;
+            color: rgba(255,255,255,0.65);
+        }
+
         /* MODERN SIRADAKİ MAÇ KARTI */
-        .next-match-card { background: linear-gradient(135deg, #a30000 0%, #4a0000 100%); border-radius: 16px; padding: 20px; margin-bottom: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.15); color: white; position: relative; overflow: hidden; }
+        .next-match-card { background: linear-gradient(135deg, #a30000 0%, #4a0000 100%); border-radius: 16px; padding: 20px; margin-bottom: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.05); }
         .nm-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .nm-title { font-size: 14px; font-weight: bold; letter-spacing: 1px; color: #fff; }
         .nm-week { background: rgba(0,0,0,0.4); padding: 4px 10px; border-radius: 12px; font-size: 10px; font-weight: bold; color: #eee; border: 1px solid rgba(255,255,255,0.1); }
         .nm-teams { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         .nm-team { display: flex; flex-direction: column; align-items: center; width: 40%; }
-        .nm-logo { width: 60px; height: 60px; background: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 8px; border: 3px solid rgba(255,255,255,0.8); overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
+        .nm-logo { width: 60px; height: 60px; background: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 8px; border: 3px solid rgba(255,255,255,0.2); overflow: hidden; }
         .nm-logo img { width: 100%; height: 100%; object-fit: cover; }
         .nm-logo i { font-size: 28px; color: #222; }
         .nm-name { font-size: 13px; font-weight: 700; text-align: center; white-space: nowrap; text-shadow: 1px 1px 3px rgba(0,0,0,0.8); }
@@ -138,11 +319,11 @@
         .nm-info i { margin-right: 5px; color: #fff; width: 12px; text-align: center; }
         .nm-countdown { display: flex; gap: 8px; }
         .nm-countdown div { display: flex; flex-direction: column; align-items: center; font-size: 9px; color: #ccc; font-weight: 600; }
-        .nm-countdown span { font-size: 16px; font-weight: bold; color: white; background: rgba(0,0,0,0.5); padding: 5px 8px; border-radius: 8px; margin-bottom: 3px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 4px 8px rgba(0,0,0,0.3); }
+        .nm-countdown span { font-size: 16px; font-weight: bold; color: white; background: rgba(0,0,0,0.5); padding: 5px 8px; border-radius: 8px; margin-bottom: 3px; border: 1px solid rgba(255,255,255,0.15); }
 
         /* Profil Ekranı */
         .profile-header { display: flex; align-items: center; padding: 20px 0; margin-bottom: 30px; border-bottom: 1px solid rgba(255,255,255,0.1); }
-        .profile-avatar-large { width: 100px; height: 100px; border-radius: 50%; background: #333; border: 3px solid var(--primary-red); display: flex; align-items: center; justify-content: center; margin-right: 20px; overflow: hidden; }
+        .profile-avatar-large { width: 100px; height: 100px; border-radius: 50%; background: #333; border: 3px solid var(--primary-red); display: flex; align-items: center; justify-content: center; margin-right: 20px; flex: 0 0 auto; }
         .profile-avatar-large i { font-size: 50px; color: #555; }
         .profile-name-box h2 { font-size: 24px; font-weight: 600; letter-spacing: 0.5px; }
         .profile-info-list { display: flex; flex-direction: column; gap: 15px; }
@@ -157,13 +338,13 @@
         .tabs::-webkit-scrollbar { display: none; }
         .tabs span { white-space: nowrap; font-size: 13px; color: var(--text-gray); cursor: pointer; }
         .tabs span.active { color: var(--text-white); border-bottom: 2px solid var(--text-white); font-weight: bold; }
-        
+
         .player-item { background: var(--card-bg); display: flex; align-items: center; padding: 12px; border-radius: 10px; margin-bottom: 10px; }
         .player-avatar { width: 45px; height: 45px; background: #333; border-radius: 50%; margin-right: 12px; }
         .player-info h4 { font-size: 15px; font-weight: 500; }
-        
+
         /* Seçim Kartları */
-        .select-card { background: var(--card-bg); border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; padding: 20px; margin-bottom: 15px; display: flex; align-items: center; gap: 15px; cursor: pointer; transition: background 0.2s; }
+        .select-card { background: var(--card-bg); border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; padding: 20px; margin-bottom: 15px; display: flex; align-items: center; gap: 15px; cursor: pointer; transition: all 0.2s ease; }
         .select-card:hover { background: rgba(192,0,0,0.2); border-color: var(--primary-red); }
         .select-card i { font-size: 30px; color: var(--primary-red); width: 40px; text-align: center; }
         .select-card h3 { font-size: 18px; color: var(--text-white); }
@@ -171,9 +352,9 @@
         /* FİKSTÜR KARTLARI */
         .fixture-list { display: flex; flex-direction: column; gap: 12px; margin-top: 10px; }
         .fixture-card { background: var(--card-bg); border-radius: 12px; padding: 15px; border-left: 4px solid #444; border-right: 1px solid rgba(255,255,255,0.05); border-top: 1px solid rgba(255,255,255,0.05); border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .fixture-card.win { border-left-color: #2ecc71; } 
-        .fixture-card.loss { border-left-color: #e74c3c; } 
-        .fixture-card.draw { border-left-color: #f1c40f; } 
+        .fixture-card.win { border-left-color: #2ecc71; }
+        .fixture-card.loss { border-left-color: #e74c3c; }
+        .fixture-card.draw { border-left-color: #f1c40f; }
         .fixture-week { font-size: 10px; color: var(--primary-red); text-align: center; margin-bottom: 12px; letter-spacing: 1px; font-weight: bold; }
         .fixture-row { display: flex; justify-content: space-between; align-items: center; }
         .fixture-team { flex: 1; font-size: 12px; font-weight: 600; text-align: center; line-height: 1.3; color: #ccc;}
@@ -191,9 +372,9 @@
         .nav-item.active span { color: var(--primary-red); }
         .nav-item i { font-size: 20px; margin-bottom: 4px; display: block; }
         .nav-item span { font-size: 10px; font-weight: 600; white-space: nowrap; color: #555; }
-        
+
         .center-nav-item { position: relative; top: -20px; flex: 1.2; }
-        .center-logo-wrapper { width: 55px; height: 55px; background: #111; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 4px auto; transition: transform 0.2s, box-shadow 0.2s; }
+        .center-logo-wrapper { width: 55px; height: 55px; background: #111; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 4px auto; transition: transform 0.15s ease; border: 1px solid rgba(255,255,255,0.06); }
         .center-logo-wrapper:active { transform: scale(0.95); }
         .center-logo-wrapper img { width: 45px; height: 45px; border-radius: 50%; object-fit: cover; }
         .center-nav-item span { color: var(--text-white); font-size: 11px; font-weight: bold; }
@@ -376,41 +557,123 @@
         <section id="home-screen" class="screen">
             <header class="app-header"><i class="fas fa-bars" onclick="openSidebar()"></i><img src="resimler/logo.png" alt="Logo" class="mini-logo"></header>
             <div class="content">
-                <h2>Hoş geldin 👋</h2>
-                <div style="background:var(--primary-red); padding:15px; border-radius:12px; margin:20px 0; cursor:pointer;" onclick="goTo('news-screen')">
-                    <h3>KADİMSPOR ŞAMPİYON!</h3>
-                    <p style="font-size:11px; opacity:0.8;">Haberin detayları için tıklayın</p>
+                <h2>Hoş geldin Daniel 👋</h2>
+
+                <!-- HABER SLIDER (3 HABER) -->
+                <div class="home-news-slider" id="home-news-slider">
+                    <div class="home-news-track" id="home-news-track">
+                        <div class="home-news-slide" onclick="goTo('news-screen')" aria-label="Haber 1">
+                            <div class="home-news-head">
+                                <div class="home-news-logo">
+                                    <img src="resimler/logo.png" alt="Kadimspor Logo">
+                                </div>
+                                <div class="home-news-meta">
+                                    <span class="home-news-chip"><i class="fas fa-bolt"></i> SON DAKİKA</span>
+                                    <p class="home-news-title">KADİMSPOR ŞAMPİYON!</p>
+                                </div>
+                            </div>
+                            <div class="home-news-desc">
+                                Haberin detayları için tıklayın. Kadimspor, muhteşem bir sezonun ardından kupayı kaldırdı!
+                            </div>
+                            <div class="home-news-footer">
+                                <span><i class="fas fa-calendar-alt"></i> 28 Nisan 2026</span>
+                                <span class="more">Detay <i class="fas fa-chevron-right"></i></span>
+                            </div>
+                        </div>
+
+                        <div class="home-news-slide" onclick="goTo('news-screen')" aria-label="Haber 2">
+                            <div class="home-news-head">
+                                <div class="home-news-logo">
+                                    <img src="resimler/logo.png" alt="Kadimspor Logo">
+                                </div>
+                                <div class="home-news-meta">
+                                    <span class="home-news-chip"><i class="fas fa-newspaper"></i> HABER</span>
+                                    <p class="home-news-title">Yeni Sezon Hazırlıkları Başladı</p>
+                                </div>
+                            </div>
+                            <div class="home-news-desc">
+                                A Takımımız, önümüzdeki sezon için antrenmanlara başladı. Program ve gelişmeler Haberler’de.
+                            </div>
+                            <div class="home-news-footer">
+                                <span><i class="fas fa-calendar-alt"></i> 25 Nisan 2026</span>
+                                <span class="more">Detay <i class="fas fa-chevron-right"></i></span>
+                            </div>
+                        </div>
+
+                        <div class="home-news-slide" onclick="goTo('news-screen')" aria-label="Haber 3">
+                            <div class="home-news-head">
+                                <div class="home-news-logo">
+                                    <img src="resimler/logo.png" alt="Kadimspor Logo">
+                                </div>
+                                <div class="home-news-meta">
+                                    <span class="home-news-chip"><i class="fas fa-bullhorn"></i> DUYURU</span>
+                                    <p class="home-news-title">Altyapı Seçmeleri Yakında</p>
+                                </div>
+                            </div>
+                            <div class="home-news-desc">
+                                U-13 / U-18 altyapı seçmeleri için başvuru detayları yakında paylaşılacaktır. Takipte kalın.
+                            </div>
+                            <div class="home-news-footer">
+                                <span><i class="fas fa-calendar-alt"></i> 20 Nisan 2026</span>
+                                <span class="more">Detay <i class="fas fa-chevron-right"></i></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="home-news-dots" id="home-news-dots">
+                        <span class="home-news-dot active" data-index="0" aria-label="1. habere git"></span>
+                        <span class="home-news-dot" data-index="1" aria-label="2. habere git"></span>
+                        <span class="home-news-dot" data-index="2" aria-label="3. habere git"></span>
+                    </div>
                 </div>
-                
-                <div class="next-match-card">
-                    <div class="nm-header">
-                        <span class="nm-title">SIRADAKİ MAÇ</span>
-                        <span class="nm-week">HAFTA 12</span>
-                    </div>
-                    <div class="nm-teams">
-                        <div class="nm-team">
-                            <div class="nm-logo"><img src="resimler/logo.png" alt="Kadimspor"></div>
-                            <span class="nm-name">KADİMSPOR</span>
+
+                <!-- TAKIM SEKME BAR -->
+                <div class="home-team-tabs" id="home-team-tabs">
+                    <div class="home-team-tab active" data-team="A">A Takım</div>
+                    <div class="home-team-tab" data-team="U11">U-11</div>
+                    <div class="home-team-tab" data-team="U12">U-12</div>
+                    <div class="home-team-tab" data-team="U13">U-13</div>
+                    <div class="home-team-tab" data-team="U18">U-18</div>
+                </div>
+
+                <!-- A TAKIMI SEÇİLİNCE GÖRÜNÜR -->
+                <div id="next-match-wrapper">
+                    <div class="next-match-card">
+                        <div class="nm-header">
+                            <span class="nm-title">SIRADAKİ MAÇ</span>
+                            <span class="nm-week">HAFTA 12</span>
                         </div>
-                        <div class="nm-vs">VS</div>
-                        <div class="nm-team">
-                            <div class="nm-logo"><i class="fas fa-shield-alt" style="color: #27ae60;"></i></div>
-                            <span class="nm-name">ÇAYIRBAŞI</span>
+                        <div class="nm-teams">
+                            <div class="nm-team">
+                                <div class="nm-logo"><img src="resimler/logo.png" alt="Kadimspor"></div>
+                                <span class="nm-name">KADİMSPOR</span>
+                            </div>
+                            <div class="nm-vs">VS</div>
+                            <div class="nm-team">
+                                <div class="nm-logo"><i class="fas fa-shield-alt" style="color: #27ae60;"></i></div>
+                                <span class="nm-name">ÇAYIRBAŞI</span>
+                            </div>
                         </div>
-                    </div>
-                    <div class="nm-footer">
-                        <div class="nm-info">
-                            <i class="fas fa-calendar-alt"></i> 31 Mayıs 2026, 14:00<br>
-                            <i class="fas fa-map-marker-alt"></i> Bakırköy Bld. 2 Nolu Saha
-                        </div>
-                        <div class="nm-countdown">
-                            <div><span>04</span>GÜN</div>
-                            <div><span>19</span>SAAT</div>
-                            <div><span>30</span>DK</div>
+                        <div class="nm-footer">
+                            <div class="nm-info">
+                                <i class="fas fa-calendar-alt"></i> 31 Mayıs 2026, 14:00<br>
+                                <i class="fas fa-map-marker-alt"></i> Bakırköy Bld. 2 Nolu Saha
+                            </div>
+                            <div class="nm-countdown">
+                                <div><span>04</span>GÜN</div>
+                                <div><span>19</span>SAAT</div>
+                                <div><span>30</span>DK</div>
+                            </div>
                         </div>
                     </div>
                 </div>
-                
+
+                <!-- DİĞER YAŞ GRUPLARINDA GÖRÜNÜR -->
+                <div id="next-match-soon" class="upcoming-placeholder" style="display:none;">
+                    <i class="fas fa-clock"></i>
+                    Sıradaki maç yakında açıklanacak.
+                </div>
+
             </div>
             <nav class="bottom-nav">
                 <div class="nav-item active" onclick="goTo('home-screen')"><i class="fas fa-home"></i><span>Ana Sayfa</span></div>
@@ -488,7 +751,7 @@
                     <span onclick="switchTeamTab('team-fikstur', this)">Fikstür</span>
                     <span onclick="switchTeamTab('team-puan', this)">Puan Durumu</span>
                 </div>
-                
+
                 <div id="team-oyuncular" class="team-content active">
                     <div id="a-takim-oyuncu-listesi" class="player-list">
                         <div class="player-item"><div class="player-avatar"></div><div class="player-info"><h4>Arda Boztaş</h4></div></div>
@@ -518,22 +781,22 @@
 
                 <div id="team-fikstur" class="team-content" style="display: none;">
                     <div id="a-takim-fikstur-listesi" class="fixture-list">
-                        <div class="fixture-card draw"><div class="fixture-week">1. HAFTA</div><div class="fixture-row"><div class="fixture-team home highlight">KADİMSPOR</div><div class="fixture-score">0 - 0</div><div class="fixture-team away">ŞEHREMİNİ</div></div></div>
-                        <div class="fixture-card win"><div class="fixture-week">2. HAFTA</div><div class="fixture-row"><div class="fixture-team home">ESENLER Y. SELİM</div><div class="fixture-score">0 - 1</div><div class="fixture-team away highlight">KADİMSPOR</div></div></div>
+                        <div class="fixture-card draw"><div class="fixture-week">1. HAFTA</div><div class="fixture-row"><div class="fixture-team home highlight">KADİMSPOR</div><div class="fixture-score">2 - 2</div><div class="fixture-team away">YENİ LEVENT</div></div></div>
+                        <div class="fixture-card win"><div class="fixture-week">2. HAFTA</div><div class="fixture-row"><div class="fixture-team home">ESENLER Y. SELİM</div><div class="fixture-score">0 - 4</div><div class="fixture-team away highlight">KADİMSPOR</div></div></div>
                         <div class="fixture-card win"><div class="fixture-week">3. HAFTA</div><div class="fixture-row"><div class="fixture-team home">AVCILAR 1903</div><div class="fixture-score">1 - 6</div><div class="fixture-team away highlight">KADİMSPOR</div></div></div>
-                        <div class="fixture-card draw"><div class="fixture-week">4. HAFTA</div><div class="fixture-row"><div class="fixture-team home highlight">KADİMSPOR</div><div class="fixture-score">1 - 1</div><div class="fixture-team away">BAĞCILAR EVREN</div></div></div>
+                        <div class="fixture-card draw"><div class="fixture-week">4. HAFTA</div><div class="fixture-row"><div class="fixture-team home highlight">KADİMSPOR</div><div class="fixture-score">1 - 1</div><div class="fixture-team away">ŞEHREMİNİ</div></div></div>
                         <div class="fixture-card loss"><div class="fixture-week">5. HAFTA</div><div class="fixture-row"><div class="fixture-team home">ÇAYIRBAŞI</div><div class="fixture-score">3 - 2</div><div class="fixture-team away highlight">KADİMSPOR</div></div></div>
-                        <div class="fixture-card win"><div class="fixture-week">6. HAFTA</div><div class="fixture-row"><div class="fixture-team home highlight">KADİMSPOR</div><div class="fixture-score">1 - 0</div><div class="fixture-team away">YENİ LEVENT</div></div></div>
+                        <div class="fixture-card win"><div class="fixture-week">6. HAFTA</div><div class="fixture-row"><div class="fixture-team home highlight">KADİMSPOR</div><div class="fixture-score">4 - 0</div><div class="fixture-team away">BAĞCILAR EVREN</div></div></div>
                         <div class="fixture-card draw"><div class="fixture-week">7. HAFTA</div><div class="fixture-row"><div class="fixture-team home">SEFAKÖY</div><div class="fixture-score">0 - 0</div><div class="fixture-team away highlight">KADİMSPOR</div></div></div>
-                        
-                        <div class="fixture-card loss"><div class="fixture-week">8. HAFTA</div><div class="fixture-row"><div class="fixture-team home">ŞEHREMİNİ</div><div class="fixture-score">3 - 0</div><div class="fixture-team away highlight">KADİMSPOR</div></div></div>
-                        <div class="fixture-card win"><div class="fixture-week">9. HAFTA</div><div class="fixture-row"><div class="fixture-team home highlight">KADİMSPOR</div><div class="fixture-score">3 - 0</div><div class="fixture-team away">ESENLER Y. SELİM</div></div></div>
-                        <div class="fixture-card win"><div class="fixture-week">10. HAFTA</div><div class="fixture-row"><div class="fixture-team home highlight">KADİMSPOR</div><div class="fixture-score">6 - 0</div><div class="fixture-team away">AVCILAR 1903</div></div></div>
+
+                        <div class="fixture-card loss"><div class="fixture-week">8. HAFTA</div><div class="fixture-row"><div class="fixture-team home">ŞEHREMİNİ</div><div class="fixture-score">3 - 1</div><div class="fixture-team away highlight">KADİMSPOR</div></div></div>
+                        <div class="fixture-card win"><div class="fixture-week">9. HAFTA</div><div class="fixture-row"><div class="fixture-team home highlight">KADİMSPOR</div><div class="fixture-score">2 - 0</div><div class="fixture-team away">AVCILAR 1903</div></div></div>
+                        <div class="fixture-card win"><div class="fixture-week">10. HAFTA</div><div class="fixture-row"><div class="fixture-team home highlight">KADİMSPOR</div><div class="fixture-score">5 - 0</div><div class="fixture-team away">ESENLER Y. SELİM</div></div></div>
                         <div class="fixture-card win"><div class="fixture-week">11. HAFTA</div><div class="fixture-row"><div class="fixture-team home">BAĞCILAR EVREN</div><div class="fixture-score">1 - 3</div><div class="fixture-team away highlight">KADİMSPOR</div></div></div>
-                        
+
                         <div class="fixture-card"><div class="fixture-week">12. HAFTA</div><div class="fixture-row"><div class="fixture-team home highlight">KADİMSPOR</div><div class="fixture-score">-</div><div class="fixture-team away">ÇAYIRBAŞI</div></div></div>
                         <div class="fixture-card"><div class="fixture-week">13. HAFTA</div><div class="fixture-row"><div class="fixture-team home">YENİ LEVENT</div><div class="fixture-score">-</div><div class="fixture-team away highlight">KADİMSPOR</div></div></div>
-                        <div class="fixture-card" style="margin-bottom: 20px;"><div class="fixture-week">14. HAFTA</div><div class="fixture-row"><div class="fixture-team home highlight">KADİMSPOR</div><div class="fixture-score">-</div><div class="fixture-team away">SEFAKÖY</div></div></div>
+                        <div class="fixture-card" style="margin-bottom: 20px;"><div class="fixture-week">14. HAFTA</div><div class="fixture-row"><div class="fixture-team home highlight">KADİMSPOR</div><div class="fixture-score">-</div><div class="fixture-team away">ŞEHREMİNİ</div></div></div>
                     </div>
                     <div id="other-fikstur-listesi" class="empty-state" style="display:none;">Fikstür yakında eklenecek...</div>
                 </div>
@@ -581,11 +844,11 @@
             <div class="content">
                 <div class="news-card">
                     <div class="news-img-placeholder"><span class="news-badge">SON DAKİKA</span><i class="fas fa-trophy"></i></div>
-                    <div class="news-body"><span class="news-date">28 Nisan 2026</span><h3 class="news-title">KADİMSPOR ŞAMPİYON!</h3><p class="news-summary">Kulübümüz, muhteşem bir sezonun ardından final maçında rakibini mağlup ederek kupayı müzesine götürdü.</p></div>
+                    <div class="news-body"><span class="news-date">28 Nisan 2026</span><h3 class="news-title">KADİMSPOR ŞAMPİYON!</h3><p class="news-summary">Kulübümüz, muhteşem bir sezonun ardından kupayı kaldırdı. Taraftarımızla birlikte tarihi bir başarıya imza attık.</p></div>
                 </div>
                 <div class="news-card">
                     <div class="news-img-placeholder"><i class="fas fa-newspaper"></i></div>
-                    <div class="news-body"><span class="news-date">25 Nisan 2026</span><h3 class="news-title">Yeni Sezon Hazırlıkları Başladı</h3><p class="news-summary">A Takımımız, önümüzdeki sezonun planlaması ve ilk idmanlar için sahaya indi. Hedef yine zirve!</p></div>
+                    <div class="news-body"><span class="news-date">25 Nisan 2026</span><h3 class="news-title">Yeni Sezon Hazırlıkları Başladı</h3><p class="news-summary">A Takımımız, önümüzdeki sezon için antrenmanlara başladı. Kamp programı ve yeni transfer haberleri yakında.</p></div>
                 </div>
             </div>
             <nav class="bottom-nav">
@@ -656,7 +919,7 @@
             </header>
             <div class="content">
                 <h3 id="reg-form-subtitle" style="margin-bottom: 20px; color: var(--primary-red); text-align: center; font-size: 16px;"></h3>
-                
+
                 <div id="form-BASKETBOL" class="tourney-form-group" style="display: none;">
                     <div class="input-group"><label>Ad-Soyad (Zorunlu*)</label><input type="text" placeholder="Adınızı ve soyadınızı giriniz"></div>
                     <div class="input-group"><label>Yaş (Zorunlu*)</label><input type="number" placeholder="Yaşınızı giriniz"></div>
@@ -715,11 +978,11 @@
                     <div style="background: var(--card-bg); padding: 12px; border-radius: 15px; text-align: center; border: 1px solid rgba(255,255,255,0.05); display: flex; flex-direction: column;">
                         <div style="height: 120px; background: #222; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 12px; position: relative;">
                             <i class="fas fa-tshirt" style="font-size: 40px; color: #444;"></i>
-                            <span style="position: absolute; top: 8px; left: 8px; background: var(--primary-red); color: white; font-size: 9px; padding: 4px 6px; border-radius: 4px; font-weight: bold; letter-spacing: 1px;">YENİ</span>
+                            <span style="position: absolute; top: 8px; left: 8px; background: var(--primary-red); color: white; font-size: 9px; padding: 4px 6px; border-radius: 4px; font-weight: bold;">YENİ</span>
                         </div>
                         <h4 style="font-size: 13px; margin-bottom: 5px; color: var(--text-white); font-weight: 600; flex-grow: 1;">İç Saha Forması</h4>
                         <p style="font-weight: bold; color: var(--primary-red); font-size: 15px; margin-bottom: 10px;">₺1.250</p>
-                        <button type="button" style="background: transparent; color: white; border: 1px solid var(--primary-red); padding: 8px; width: 100%; border-radius: 8px; font-size: 12px; cursor: pointer;">Sepete Ekle</button>
+                        <button type="button" style="background: transparent; color: white; border: 1px solid var(--primary-red); padding: 8px; width: 100%; border-radius: 8px; font-size: 12px; cursor:pointer;">Sepete Ekle</button>
                     </div>
                     <div style="background: var(--card-bg); padding: 12px; border-radius: 15px; text-align: center; border: 1px solid rgba(255,255,255,0.05); display: flex; flex-direction: column;">
                         <div style="height: 120px; background: #222; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 12px;">
@@ -727,7 +990,7 @@
                         </div>
                         <h4 style="font-size: 13px; margin-bottom: 5px; color: var(--text-white); font-weight: 600; flex-grow: 1;">Deplasman Forması</h4>
                         <p style="font-weight: bold; color: var(--primary-red); font-size: 15px; margin-bottom: 10px;">₺1.250</p>
-                        <button type="button" style="background: transparent; color: white; border: 1px solid var(--primary-red); padding: 8px; width: 100%; border-radius: 8px; font-size: 12px; cursor: pointer;">Sepete Ekle</button>
+                        <button type="button" style="background: transparent; color: white; border: 1px solid var(--primary-red); padding: 8px; width: 100%; border-radius: 8px; font-size: 12px; cursor:pointer;">Sepete Ekle</button>
                     </div>
                     <div style="background: var(--card-bg); padding: 12px; border-radius: 15px; text-align: center; border: 1px solid rgba(255,255,255,0.05); display: flex; flex-direction: column;">
                         <div style="height: 120px; background: #222; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 12px;">
@@ -735,7 +998,7 @@
                         </div>
                         <h4 style="font-size: 13px; margin-bottom: 5px; color: var(--text-white); font-weight: 600; flex-grow: 1;">Kadimspor Atkı</h4>
                         <p style="font-weight: bold; color: var(--primary-red); font-size: 15px; margin-bottom: 10px;">₺350</p>
-                        <button type="button" style="background: transparent; color: white; border: 1px solid var(--primary-red); padding: 8px; width: 100%; border-radius: 8px; font-size: 12px; cursor: pointer;">Sepete Ekle</button>
+                        <button type="button" style="background: transparent; color: white; border: 1px solid var(--primary-red); padding: 8px; width: 100%; border-radius: 8px; font-size: 12px; cursor:pointer;">Sepete Ekle</button>
                     </div>
                 </div>
             </div>
@@ -754,7 +1017,13 @@
         <section id="profile-screen" class="screen">
             <header class="app-header"><i class="fas fa-chevron-left" onclick="goTo('home-screen')"></i><img src="resimler/logo.png" alt="Logo" class="mini-logo"></header>
             <div class="content">
-                <div class="profile-header"><div class="profile-avatar-large"><i class="fas fa-camera"></i></div><div class="profile-name-box"><p style="font-size:12px; color:var(--text-gray);">Hoş Geldin</p><h2>Ad Soyad</h2></div></div>
+                <div class="profile-header">
+                    <div class="profile-avatar-large"><i class="fas fa-camera"></i></div>
+                    <div class="profile-name-box">
+                        <p style="font-size:12px; color:var(--text-gray);">Hoş Geldin</p>
+                        <h2>Üye Adı</h2>
+                    </div>
+                </div>
                 <div class="profile-info-list">
                     <div class="info-row"><i class="fas fa-id-card"></i><div class="info-data"><span class="info-label">Üye Numarası</span><span class="info-value">#12345678</span></div></div>
                     <div class="info-row"><i class="fas fa-birthday-cake"></i><div class="info-data"><span class="info-label">Doğum Tarihi</span><span class="info-value">01 / 01 / 1990</span></div></div>
@@ -801,7 +1070,7 @@
             const submenu = document.getElementById(id);
             submenu.classList.toggle('active');
             const arrow = submenu.previousElementSibling.querySelector('.arrow-icon');
-            if(submenu.classList.contains('active')) { arrow.classList.replace('fa-chevron-down', 'fa-chevron-up'); } 
+            if(submenu.classList.contains('active')) { arrow.classList.replace('fa-chevron-down', 'fa-chevron-up'); }
             else { arrow.classList.replace('fa-chevron-up', 'fa-chevron-down'); }
         }
 
@@ -829,7 +1098,7 @@
         function toggleBasketTeamFields() {
             const selection = document.getElementById('basketbol-katilim').value;
             const teamFields = document.getElementById('basketbol-takim-alanlari');
-            if(selection === 'takimli') { teamFields.style.display = 'block'; } 
+            if(selection === 'takimli') { teamFields.style.display = 'block'; }
             else { teamFields.style.display = 'none'; }
         }
 
@@ -899,33 +1168,129 @@
             }).join("");
         }
 
+        // ===== ANA SAYFA HABER SLIDER JS =====
+        let homeNewsIndex = 0;
+        let homeNewsTimer = null;
+
+        function setHomeNewsIndex(nextIndex) {
+            const track = document.getElementById("home-news-track");
+            const dots = Array.from(document.querySelectorAll("#home-news-dots .home-news-dot"));
+            const slider = document.getElementById("home-news-slider");
+            if (!track || !slider) return;
+
+            const count = track.children.length;
+            homeNewsIndex = ((nextIndex % count) + count) % count;
+
+            track.style.transform = `translateX(-${homeNewsIndex * 100}%)`;
+            dots.forEach((d, i) => d.classList.toggle("active", i === homeNewsIndex));
+        }
+
+        function startHomeNewsAutoPlay() {
+            stopHomeNewsAutoPlay();
+            homeNewsTimer = setInterval(() => {
+                setHomeNewsIndex(homeNewsIndex + 1);
+            }, 3500);
+        }
+
+        function stopHomeNewsAutoPlay() {
+            if (homeNewsTimer) {
+                clearInterval(homeNewsTimer);
+                homeNewsTimer = null;
+            }
+        }
+
+        function initHomeNewsSlider() {
+            const slider = document.getElementById("home-news-slider");
+            const dots = Array.from(document.querySelectorAll("#home-news-dots .home-news-dot"));
+            if (!slider) return;
+
+            dots.forEach(dot => {
+                dot.addEventListener("click", () => {
+                    const i = Number(dot.getAttribute("data-index") || "0");
+                    setHomeNewsIndex(i);
+                    startHomeNewsAutoPlay();
+                });
+            });
+
+            // Basit swipe
+            let startX = 0;
+            let deltaX = 0;
+
+            slider.addEventListener("touchstart", (e) => {
+                stopHomeNewsAutoPlay();
+                startX = e.touches[0].clientX;
+                deltaX = 0;
+            }, { passive: true });
+
+            slider.addEventListener("touchmove", (e) => {
+                deltaX = e.touches[0].clientX - startX;
+            }, { passive: true });
+
+            slider.addEventListener("touchend", () => {
+                const threshold = 45;
+                if (deltaX > threshold) setHomeNewsIndex(homeNewsIndex - 1);
+                else if (deltaX < -threshold) setHomeNewsIndex(homeNewsIndex + 1);
+                startHomeNewsAutoPlay();
+            });
+
+            slider.addEventListener("mouseenter", stopHomeNewsAutoPlay);
+            slider.addEventListener("mouseleave", startHomeNewsAutoPlay);
+
+            setHomeNewsIndex(0);
+            startHomeNewsAutoPlay();
+        }
+
+        // ===== ANA SAYFA TAKIM SEKME JS =====
+        function initHomeTeamTabs(){
+            const tabsWrap = document.getElementById("home-team-tabs");
+            const matchWrap = document.getElementById("next-match-wrapper");
+            const soonBox  = document.getElementById("next-match-soon");
+            if(!tabsWrap || !matchWrap || !soonBox) return;
+
+            const tabs = Array.from(tabsWrap.querySelectorAll(".home-team-tab"));
+
+            function setTeam(team){
+                tabs.forEach(t => t.classList.toggle("active", t.dataset.team === team));
+
+                if(team === "A"){
+                    matchWrap.style.display = "block";
+                    soonBox.style.display = "none";
+                }else{
+                    matchWrap.style.display = "none";
+                    soonBox.style.display = "block";
+                }
+            }
+
+            tabs.forEach(t => {
+                t.addEventListener("click", () => setTeam(t.dataset.team));
+            });
+
+            // default
+            setTeam("A");
+        }
+
         // ===== SPLASH VIDEO: BİTİNCE HOME'A GEÇ =====
         function startSplash() {
             const video = document.getElementById("intro-video");
             const fallback = document.getElementById("splash-fallback");
 
-            // Video yoksa direkt ana sayfa
             if (!video) {
                 goTo("home-screen");
                 return;
             }
 
-            // Video hata verirse fallback göster + 1sn sonra home
             video.addEventListener("error", () => {
                 if (fallback) fallback.style.display = "flex";
                 setTimeout(() => goTo("home-screen"), 1000);
             });
 
-            // Video bitince home
             video.addEventListener("ended", () => {
                 goTo("home-screen");
             });
 
-            // Bazı tarayıcılarda autoplay bloklanabilir, play deneyelim
             const tryPlay = video.play();
             if (tryPlay && typeof tryPlay.catch === "function") {
                 tryPlay.catch(() => {
-                    // Autoplay engellendiyse fallback göster + kısa süre sonra home
                     if (fallback) fallback.style.display = "flex";
                     setTimeout(() => goTo("home-screen"), 1200);
                 });
@@ -934,6 +1299,8 @@
 
         document.addEventListener("DOMContentLoaded", () => {
             renderStandings();
+            initHomeNewsSlider();
+            initHomeTeamTabs();
             startSplash();
         });
     </script>
